@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="nome" placeholder="Digite o nome completo">
+      <mat-error *ngIf="form.get('nome')?.hasError('required')">Nome é obrigatório</mat-error>
+      <mat-error *ngIf="form.get('nome')?.hasError('minlength')">Mínimo de 3 caracteres</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" placeholder="email@exemplo.com">
+      <mat-error *ngIf="form.get('email')?.hasError('required')">Email é obrigatório</mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('email')">Email inválido</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>CPF</mat-label>
+      <input matInput formControlName="cpf" (input)="onCpfInput($event)" placeholder="000.000.000-00">
+      <mat-error *ngIf="form.get('cpf')?.hasError('required')">CPF é obrigatório</mat-error>
+      <mat-error *ngIf="form.get('cpf')?.hasError('pattern')">CPF inválido</mat-error>
+    </mat-form-field>
+
+    <div class="bio-section">
+      <mat-form-field appearance="outline">
+        <mat-label>Bio</mat-label>
+        <textarea matInput formControlName="bio" rows="4" placeholder="Fale um pouco sobre o usuário..."></textarea>
+      </mat-form-field>
+      
+      <button mat-stroked-button type="button" color="primary" class="ai-button" (click)="suggestBio()" [disabled]="isSuggestingBio">
+        <mat-icon>auto_awesome</mat-icon>
+        Sugerir com IA
+      </button>
+      <mat-progress-bar *ngIf="isSuggestingBio" mode="indeterminate"></mat-progress-bar>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="onCancel()" [disabled]="isSubmitting">Cancelar</button>
+  <button mat-flat-button color="primary" class="submit-button" (click)="onSubmit()" [disabled]="isSubmitting || form.invalid">
+    <span *ngIf="!isSubmitting">Salvar</span>
+    <mat-spinner *ngIf="isSubmitting" diameter="24" color="accent"></mat-spinner>
+  </button>
+</mat-dialog-actions>
