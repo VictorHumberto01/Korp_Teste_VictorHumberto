@@ -1,4 +1,4 @@
-module usuario-service
+module estoque-service
 
 go 1.26.6
 

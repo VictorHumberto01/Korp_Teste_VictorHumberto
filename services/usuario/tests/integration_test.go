@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"usuario-service/internal/domain/entity"
 	domainerrors "usuario-service/internal/domain/errors"
+	"usuario-service/internal/domain/valueobject"
 )
 
 func generateValidCPF(base int) string {
@@ -76,20 +77,22 @@ func TestCreateAndFindUsuario(t *testing.T) {
 		t.Errorf("Expected ID %s, got %s", id, foundID.ID())
 	}
 
-	foundEmail, err := repo.FindByEmail(ctx, email)
+	emailVO, _ := valueobject.NewEmail(email)
+	foundEmail, err := repo.FindByEmail(ctx, emailVO)
 	if err != nil {
 		t.Errorf("FindByEmail failed: %v", err)
 	}
-	if foundEmail.Email() != email {
-		t.Errorf("Expected Email %s, got %s", email, foundEmail.Email())
+	if foundEmail.Email().Value() != email {
+		t.Errorf("Expected Email %s, got %s", email, foundEmail.Email().Value())
 	}
 
-	foundCPF, err := repo.FindByCPF(ctx, cpf)
+	cpfVO, _ := valueobject.NewCPF(cpf)
+	foundCPF, err := repo.FindByCPF(ctx, cpfVO)
 	if err != nil {
 		t.Errorf("FindByCPF failed: %v", err)
 	}
-	if foundCPF.CPF() != cpf {
-		t.Errorf("Expected CPF %s, got %s", cpf, foundCPF.CPF())
+	if foundCPF.CPF().Value() != cpfVO.Value() {
+		t.Errorf("Expected CPF %s, got %s", cpfVO.Value(), foundCPF.CPF().Value())
 	}
 }
 
@@ -154,8 +157,8 @@ func TestUpdateUsuario(t *testing.T) {
 	}
 
 	found, _ := repo.FindByID(ctx, id)
-	if found.Nome() != "New Name" {
-		t.Errorf("Expected name 'New Name', got '%s'", found.Nome())
+	if found.Nome().Value() != "New Name" {
+		t.Errorf("Expected name 'New Name', got '%s'", found.Nome().Value())
 	}
 }
 
@@ -248,7 +251,8 @@ func TestExistsByEmailAndCPF(t *testing.T) {
 	u, _ := entity.NewUsuario(id, "Test Exists", email, cpf)
 	repo.Save(ctx, u)
 
-	existsEmail, err := repo.ExistsByEmail(ctx, email)
+	emailVO, _ := valueobject.NewEmail(email)
+	existsEmail, err := repo.ExistsByEmail(ctx, emailVO)
 	if err != nil {
 		t.Errorf("ExistsByEmail failed: %v", err)
 	}
@@ -256,7 +260,8 @@ func TestExistsByEmailAndCPF(t *testing.T) {
 		t.Errorf("Expected ExistsByEmail to be true")
 	}
 
-	existsCPF, err := repo.ExistsByCPF(ctx, cpf)
+	cpfVO, _ := valueobject.NewCPF(cpf)
+	existsCPF, err := repo.ExistsByCPF(ctx, cpfVO)
 	if err != nil {
 		t.Errorf("ExistsByCPF failed: %v", err)
 	}
@@ -264,8 +269,8 @@ func TestExistsByEmailAndCPF(t *testing.T) {
 		t.Errorf("Expected ExistsByCPF to be true")
 	}
 
-	diffEmail := "diff-" + email
-	existsDiff, _ := repo.ExistsByEmail(ctx, diffEmail)
+	diffEmailVO, _ := valueobject.NewEmail("diff-" + email)
+	existsDiff, _ := repo.ExistsByEmail(ctx, diffEmailVO)
 	if existsDiff {
 		t.Errorf("Expected ExistsByEmail for diff email to be false")
 	}

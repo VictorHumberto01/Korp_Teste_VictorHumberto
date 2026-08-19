@@ -10,6 +10,7 @@ services:
       POSTGRES_DB: usuario_db
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U korp -d usuario_db"]
       interval: 5s

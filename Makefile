@@ -1,4 +1,4 @@
-.PHONY: docker-up docker-down run-usuario run-frontend test test-concurrency ollama-pull
+.PHONY: docker-up docker-down run-usuario run-estoque run-frontend test test-concurrency ollama-pull
 
 # ========================
 # Docker
@@ -20,6 +20,12 @@ test:
 
 test-concurrency:
 	cd services/usuario && go test ./tests/ -run TestConcurrent -v -race -count=1
+
+# ========================
+# Backend — Serviço de Estoque
+# ========================
+run-estoque:
+	cd services/estoque && go run ./cmd/main.go
 
 # ========================
 # Frontend
@@ -44,5 +50,6 @@ run-all: docker-up
 	@sleep 3
 	@echo "Iniciando serviços..."
 	$(MAKE) run-usuario &
+	$(MAKE) run-estoque &
 	$(MAKE) run-frontend &
 	@echo "Todos os serviços iniciados!"

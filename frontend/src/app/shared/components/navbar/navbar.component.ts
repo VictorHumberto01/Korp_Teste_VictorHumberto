@@ -15,9 +15,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       <span class="spacer"></span>
       <nav>
         <button mat-button routerLink="/usuarios" routerLinkActive="active-link">Usuários</button>
-        <span matTooltip="Em breve" matTooltipPosition="below">
-          <button mat-button routerLink="/produtos" disabled>Produtos</button>
-        </span>
+        <button mat-button routerLink="/produtos" routerLinkActive="active-link">Produtos</button>
         <span matTooltip="Em breve" matTooltipPosition="below">
           <button mat-button routerLink="/notas-fiscais" disabled>Notas Fiscais</button>
         </span>

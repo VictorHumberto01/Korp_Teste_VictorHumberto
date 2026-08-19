@@ -170,8 +170,8 @@ func TestConcurrentCreateSameEmail(t *testing.T) {
 		t.Errorf("Expected exactly 4 failed creates, got %d", failCount)
 	}
 
-	// Wait, FindByEmail handles fetching exactly 1
-	foundUser, err := repo.FindByEmail(ctx, email)
+	emailVO, _ := valueobject.NewEmail(email)
+	foundUser, err := repo.FindByEmail(ctx, emailVO)
 	if err != nil {
 		t.Fatalf("Failed to find user by email: %v", err)
 	}

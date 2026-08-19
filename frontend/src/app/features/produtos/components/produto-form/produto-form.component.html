@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Código</mat-label>
+      <input matInput formControlName="codigo" placeholder="Ex. PROD-001">
+      <mat-error *ngIf="form.get('codigo')?.hasError('required')">Código é obrigatório</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descrição</mat-label>
+      <input matInput formControlName="descricao" placeholder="Nome do produto">
+      <mat-error *ngIf="form.get('descricao')?.hasError('required')">Descrição é obrigatória</mat-error>
+      <mat-error *ngIf="form.get('descricao')?.hasError('minlength')">Mínimo de 3 caracteres</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Saldo</mat-label>
+      <input matInput formControlName="saldo" type="number" placeholder="0">
+      <mat-error *ngIf="form.get('saldo')?.hasError('required')">Saldo é obrigatório</mat-error>
+      <mat-error *ngIf="form.get('saldo')?.hasError('min')">Saldo não pode ser negativo</mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="onCancel()" [disabled]="isSubmitting">Cancelar</button>
+  <button mat-flat-button color="primary" class="submit-button" (click)="onSubmit()" [disabled]="isSubmitting || form.invalid">
+    <span *ngIf="!isSubmitting">Salvar</span>
+    <mat-spinner *ngIf="isSubmitting" diameter="24" color="accent"></mat-spinner>
+  </button>
+</mat-dialog-actions>
