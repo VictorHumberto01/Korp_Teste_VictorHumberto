@@ -29,11 +29,6 @@
         <textarea matInput formControlName="bio" rows="4" placeholder="Fale um pouco sobre o usuário..."></textarea>
       </mat-form-field>
       
-      <button mat-stroked-button type="button" color="primary" class="ai-button" (click)="suggestBio()" [disabled]="isSuggestingBio">
-        <mat-icon>auto_awesome</mat-icon>
-        Sugerir com IA
-      </button>
-      <mat-progress-bar *ngIf="isSuggestingBio" mode="indeterminate"></mat-progress-bar>
     </div>
   </form>
 </mat-dialog-content>

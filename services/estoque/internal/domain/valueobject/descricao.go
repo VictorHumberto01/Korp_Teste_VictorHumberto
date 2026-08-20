@@ -2,6 +2,7 @@ package valueobject
 
 import (
 	"strings"
+	"unicode/utf8"
 
 	domainerrors "estoque-service/internal/domain/errors"
 )
@@ -12,7 +13,8 @@ type Descricao struct {
 
 func NewDescricao(value string) (Descricao, error) {
 	trimmed := strings.TrimSpace(value)
-	if len(trimmed) < 3 || len(trimmed) > 200 {
+	tamanho := utf8.RuneCountInString(trimmed)
+	if tamanho < 3 || tamanho > 200 {
 		return Descricao{}, domainerrors.ErrDescricaoInvalida
 	}
 	return Descricao{value: trimmed}, nil

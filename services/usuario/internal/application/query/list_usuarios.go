@@ -32,13 +32,9 @@ func (h *ListUsuariosHandler) Handle(ctx context.Context, page, pageSize int) (*
 		return nil, err
 	}
 
-	var data []dto.UsuarioResponse
-	if users != nil {
-		for _, u := range users {
-			data = append(data, dto.FromEntity(u))
-		}
-	} else {
-		data = []dto.UsuarioResponse{}
+	data := make([]dto.UsuarioResponse, 0, len(users))
+	for _, u := range users {
+		data = append(data, dto.FromEntity(u))
 	}
 
 	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))

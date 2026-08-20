@@ -1,0 +1,74 @@
+<div class="page-header">
+  <h1>Notas Fiscais</h1>
+  <button mat-fab extended color="primary" (click)="openFormDialog()">
+    <mat-icon>add</mat-icon>
+    Nova Nota Fiscal
+  </button>
+</div>
+
+<div class="table-container">
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <div class="error-state" *ngIf="!isLoading && hasError">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-stroked-button color="primary" (click)="loadData()">
+      <mat-icon>refresh</mat-icon>
+      Tentar novamente
+    </button>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" matSort [hidden]="isLoading || hasError || dataSource.data.length === 0">
+    <!-- Numero Column -->
+    <ng-container matColumnDef="numero">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Número </th>
+      <td mat-cell *matCellDef="let element"> {{ element.numero }} </td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+      <td mat-cell *matCellDef="let element">
+        <mat-chip [ngClass]="element.status === 'ABERTA' ? 'status-aberta' : 'status-fechada'">
+          {{ element.status === 'ABERTA' ? 'Aberta' : 'Fechada' }}
+        </mat-chip>
+      </td>
+    </ng-container>
+
+    <!-- Itens Column -->
+    <ng-container matColumnDef="itens">
+      <th mat-header-cell *matHeaderCellDef> Itens </th>
+      <td mat-cell *matCellDef="let element"> {{ element.itens.length }} produto(s) </td>
+    </ng-container>
+
+    <!-- Acoes Column -->
+    <ng-container matColumnDef="acoes">
+      <th mat-header-cell *matHeaderCellDef> Ações </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button color="primary" matTooltip="Imprimir nota"
+                [disabled]="element.status !== 'ABERTA' || isImprimindo(element.id)"
+                (click)="imprimir(element)">
+          <mat-icon *ngIf="!isImprimindo(element.id)">print</mat-icon>
+          <mat-spinner *ngIf="isImprimindo(element.id)" diameter="18"></mat-spinner>
+          {{ isImprimindo(element.id) ? 'Imprimindo...' : 'Imprimir' }}
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <div class="empty-state" *ngIf="!isLoading && !hasError && dataSource.data.length === 0">
+    <mat-icon>receipt_long</mat-icon>
+    <p>Nenhuma nota fiscal encontrada.</p>
+  </div>
+
+  <mat-paginator
+    [length]="totalRecords"
+    [pageSizeOptions]="[5, 10, 25]"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

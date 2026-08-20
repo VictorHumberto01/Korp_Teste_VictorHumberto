@@ -10,4 +10,5 @@ var (
 	ErrSaldoInvalido       = errors.New("saldo/quantidade inválido")
 	ErrSaldoInsuficiente   = errors.New("saldo insuficiente em estoque")
 	ErrConcurrencyConflict = errors.New("conflito de concorrência: registro foi modificado por outra operação")
+	ErrIAIndisponivel      = errors.New("serviço de IA indisponível")
 )

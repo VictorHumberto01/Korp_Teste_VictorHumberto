@@ -1,0 +1,68 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 450px;
+  padding-top: 8px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.empty-state {
+  padding: 16px 0;
+  color: #757575;
+  text-align: center;
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 0;
+  color: #757575;
+  gap: 12px;
+
+  mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #e57373;
+  }
+}
+
+.itens-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.produto-field {
+  flex: 2;
+}
+
+.quantidade-field {
+  flex: 1;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 0 0;
+}
+
+.submit-button {
+  min-width: 120px;
+}

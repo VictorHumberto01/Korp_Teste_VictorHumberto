@@ -8,12 +8,20 @@
       <mat-error *ngIf="form.get('codigo')?.hasError('required')">Código é obrigatório</mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Descrição</mat-label>
-      <input matInput formControlName="descricao" placeholder="Nome do produto">
-      <mat-error *ngIf="form.get('descricao')?.hasError('required')">Descrição é obrigatória</mat-error>
-      <mat-error *ngIf="form.get('descricao')?.hasError('minlength')">Mínimo de 3 caracteres</mat-error>
-    </mat-form-field>
+    <div class="desc-section">
+      <mat-form-field appearance="outline" class="desc-field">
+        <mat-label>Descrição</mat-label>
+        <textarea matInput formControlName="descricao" rows="3" placeholder="Nome ou descrição básica do produto"></textarea>
+        <mat-error *ngIf="form.get('descricao')?.hasError('required')">Descrição é obrigatória</mat-error>
+        <mat-error *ngIf="form.get('descricao')?.hasError('minlength')">Mínimo de 3 caracteres</mat-error>
+      </mat-form-field>
+      
+      <button mat-stroked-button type="button" color="primary" class="ai-button" (click)="suggestDescription()" [disabled]="isSuggestingDesc">
+        <mat-icon>auto_awesome</mat-icon>
+        Gerar Descrição IA
+      </button>
+      <mat-progress-bar *ngIf="isSuggestingDesc" mode="indeterminate"></mat-progress-bar>
+    </div>
 
     <mat-form-field appearance="outline">
       <mat-label>Saldo</mat-label>

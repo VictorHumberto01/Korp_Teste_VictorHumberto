@@ -17,7 +17,3 @@ export interface UsuarioPage {
   page_size: number;
   total_pages: number;
 }
-
-export interface SuggestBioResponse {
-  bio: string;
-}

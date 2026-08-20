@@ -1,0 +1,80 @@
+:host {
+  display: block;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 500;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+}
+
+.status-aberta {
+  background-color: #fff8e1 !important;
+  color: #f57f17 !important;
+}
+
+.status-fechada {
+  background-color: #e8f5e9 !important;
+  color: #2e7d32 !important;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  color: #757575;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    color: #bdbdbd;
+  }
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px;
+  color: #757575;
+  gap: 12px;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #e57373;
+  }
+}
+
+td mat-spinner {
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: middle;
+}

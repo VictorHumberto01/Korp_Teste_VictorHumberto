@@ -43,7 +43,6 @@ export class UsuarioFormComponent implements OnInit {
   form!: FormGroup;
   isEditMode = false;
   isSubmitting = false;
-  isSuggestingBio = false;
   title = 'Novo Usuário';
 
   constructor(
@@ -97,27 +96,6 @@ export class UsuarioFormComponent implements OnInit {
     this.form.get('cpf')?.setValue(formattedValue, { emitEvent: false });
   }
 
-  suggestBio(): void {
-    const nome = this.form.get('nome')?.value;
-    const email = this.form.get('email')?.value;
-
-    if (!nome || !email) {
-      this.notificationService.warning('Preencha nome e email para sugerir a bio.');
-      return;
-    }
-
-    this.isSuggestingBio = true;
-    this.usuarioService.suggestBio(nome, email)
-      .pipe(finalize(() => this.isSuggestingBio = false))
-      .subscribe({
-        next: (res) => {
-          this.form.get('bio')?.setValue(res.bio);
-        },
-        error: () => {
-          this.notificationService.error('IA indisponível no momento');
-        }
-      });
-  }
 
   onSubmit(): void {
     if (this.form.invalid) {

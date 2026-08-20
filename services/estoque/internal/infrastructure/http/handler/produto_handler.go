@@ -19,6 +19,7 @@ type ProdutoHandler struct {
 	creditarCmd *command.CreditarSaldoHandler
 	getQuery    *query.GetProdutoHandler
 	listQuery   *query.ListProdutosHandler
+	suggestDescriptionQuery *query.SuggestDescriptionHandler
 }
 
 func NewProdutoHandler(
@@ -29,6 +30,7 @@ func NewProdutoHandler(
 	creditarCmd *command.CreditarSaldoHandler,
 	getQuery *query.GetProdutoHandler,
 	listQuery *query.ListProdutosHandler,
+	suggestDescriptionQuery *query.SuggestDescriptionHandler,
 ) *ProdutoHandler {
 	return &ProdutoHandler{
 		createCmd:   createCmd,
@@ -38,6 +40,7 @@ func NewProdutoHandler(
 		creditarCmd: creditarCmd,
 		getQuery:    getQuery,
 		listQuery:   listQuery,
+		suggestDescriptionQuery: suggestDescriptionQuery,
 	}
 }
 
@@ -129,6 +132,21 @@ func (h *ProdutoHandler) CreditarSaldo(c *gin.Context) {
 	}
 
 	resp, err := h.creditarCmd.Handle(c.Request.Context(), id, req.Quantidade)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+func (h *ProdutoHandler) SuggestDescription(c *gin.Context) {
+	var req dto.SuggestDescriptionRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.Error(err)
+		return
+	}
+
+	resp, err := h.suggestDescriptionQuery.Handle(c.Request.Context(), req)
 	if err != nil {
 		c.Error(err)
 		return

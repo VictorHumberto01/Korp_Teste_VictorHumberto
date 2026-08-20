@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 
@@ -57,9 +58,19 @@ func ErrorHandler() gin.HandlerFunc {
 				errors.Is(err, domainerrors.ErrSaldoInvalido):
 				code = http.StatusUnprocessableEntity
 				message = err.Error()
+			case errors.Is(err, domainerrors.ErrIAIndisponivel):
+				code = http.StatusServiceUnavailable
+				message = err.Error()
+			case strings.HasPrefix(err.Error(), "ia:"):
+				code = http.StatusBadGateway
+				message = err.Error()
 			default:
 				code = http.StatusInternalServerError
 				message = "Erro interno do servidor"
+			}
+
+			if code >= http.StatusInternalServerError {
+				log.Printf("[estoque] %s %s -> %d: %v", c.Request.Method, c.Request.URL.Path, code, err)
 			}
 
 			c.JSON(code, gin.H{

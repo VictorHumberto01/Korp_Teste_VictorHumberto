@@ -35,3 +35,11 @@ type PaginatedResponse struct {
 	PageSize   int               `json:"page_size"`
 	TotalPages int               `json:"total_pages"`
 }
+
+type SuggestDescriptionRequest struct {
+	Nome string `json:"nome" binding:"required"`
+}
+
+type SuggestDescriptionResponse struct {
+	Descricao string `json:"descricao"`
+}

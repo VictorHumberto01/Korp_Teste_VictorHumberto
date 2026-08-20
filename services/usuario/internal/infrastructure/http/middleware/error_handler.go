@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 
@@ -62,6 +63,10 @@ func ErrorHandler() gin.HandlerFunc {
 			default:
 				code = http.StatusInternalServerError
 				message = "Erro interno do servidor"
+			}
+
+			if code >= http.StatusInternalServerError {
+				log.Printf("[usuario] %s %s -> %d: %v", c.Request.Method, c.Request.URL.Path, code, err)
 			}
 
 			c.JSON(code, gin.H{

@@ -52,6 +52,8 @@ export class ProdutoListComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = ['codigo', 'descricao', 'saldo', 'acoes'];
   dataSource = new MatTableDataSource<Produto>([]);
   isLoading = true;
+  hasError = false;
+  errorMessage = '';
   totalRecords = 0;
 
   searchControl = new FormControl('');
@@ -88,6 +90,7 @@ export class ProdutoListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadData(): void {
     this.isLoading = true;
+    this.hasError = false;
     const pageIndex = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const pageSize = this.paginator ? this.paginator.pageSize : 10;
 
@@ -95,13 +98,17 @@ export class ProdutoListComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (page) => {
-          this.dataSource.data = page.data;
+          this.dataSource.data = page.data || [];
           this.totalRecords = page.total;
           this.isLoading = false;
         },
-        error: () => {
-          this.notificationService.error('Erro ao carregar produtos.');
+        error: (err) => {
+          this.errorMessage = err.message || 'Erro ao carregar produtos.';
+          this.hasError = true;
+          this.dataSource.data = [];
+          this.totalRecords = 0;
           this.isLoading = false;
+          this.notificationService.error(this.errorMessage);
         }
       });
   }

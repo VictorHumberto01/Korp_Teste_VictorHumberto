@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-import { Usuario, UsuarioPage, SuggestBioResponse } from '../models/usuario.model';
+import { Usuario, UsuarioPage } from '../models/usuario.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,16 +23,32 @@ export class UsuarioService {
   }
 
   private handleError(error: any) {
-    let errorMessage = 'Ocorreu um erro desconhecido.';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Erro: ${error.error.message}`;
+    let errorMessage: string;
+
+    if (error.status === 0) {
+      // Falha de rede pura (conexão recusada, DNS, CORS bloqueado etc.) —
+      // vem antes de tudo porque o objeto `error.error` nesse caso é um
+      // ErrorEvent/ProgressEvent com uma mensagem crua do navegador (ex:
+      // "NetworkError when attempting to fetch resource"), não algo pra
+      // mostrar pro usuário.
+      errorMessage = 'Não foi possível conectar ao serviço de usuários. Verifique se ele está no ar.';
+    } else if (error.error?.error?.message) {
+      // Envelope de erro do backend: { "error": { "code", "message" } }
+      errorMessage = error.error.error.message;
+    } else if (error.error?.message) {
+      errorMessage = error.error.message;
+    } else if (error.status === 404) {
+      errorMessage = 'Usuário não encontrado.';
+    } else if (error.status === 502 || error.status === 503) {
+      errorMessage = 'O serviço de usuários está temporariamente indisponível. Tente novamente em instantes.';
+    } else if (error.status >= 500) {
+      errorMessage = 'Ocorreu um erro no servidor. Tente novamente mais tarde.';
     } else if (error.status) {
-      if (error.error && error.error.message) {
-        errorMessage = error.error.message;
-      } else {
-        errorMessage = `Código do erro: ${error.status}, mensagem: ${error.message}`;
-      }
+      errorMessage = `Não foi possível completar a operação (código ${error.status}).`;
+    } else {
+      errorMessage = 'Ocorreu um erro desconhecido.';
     }
+
     return throwError(() => new Error(errorMessage));
   }
 
@@ -66,12 +82,6 @@ export class UsuarioService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  suggestBio(nome: string, email: string): Observable<SuggestBioResponse> {
-    return this.http.post<SuggestBioResponse>(`${this.apiUrl}/suggest-bio`, { nome, email }).pipe(
       catchError(this.handleError)
     );
   }

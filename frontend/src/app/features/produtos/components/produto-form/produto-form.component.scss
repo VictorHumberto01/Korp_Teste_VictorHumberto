@@ -20,3 +20,19 @@ mat-form-field {
 .submit-button {
   min-width: 120px;
 }
+
+.desc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.ai-button {
+  align-self: flex-start;
+  margin-bottom: 8px;
+}
+
+.desc-field {
+  margin-bottom: 0;
+}

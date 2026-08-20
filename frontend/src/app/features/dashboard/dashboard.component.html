@@ -1,0 +1,47 @@
+<div class="page-header">
+  <h1>Visão Geral</h1>
+</div>
+
+<div class="loading-container" *ngIf="isLoading">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>
+
+<div class="error-state" *ngIf="!isLoading && hasError">
+  <mat-icon>error_outline</mat-icon>
+  <p>{{ errorMessage }}</p>
+  <button mat-stroked-button color="primary" (click)="loadStats()">
+    <mat-icon>refresh</mat-icon>
+    Tentar novamente
+  </button>
+</div>
+
+<div class="stats-row" *ngIf="!isLoading && stats">
+  <a routerLink="/usuarios" class="stat-tile-link">
+    <mat-card class="stat-tile">
+      <mat-icon class="stat-icon">group</mat-icon>
+      <span class="stat-label">Usuários cadastrados</span>
+      <span class="stat-value">{{ stats.totalUsuarios }}</span>
+    </mat-card>
+  </a>
+
+  <a routerLink="/produtos" class="stat-tile-link">
+    <mat-card class="stat-tile">
+      <mat-icon class="stat-icon">inventory_2</mat-icon>
+      <span class="stat-label">Produtos em estoque</span>
+      <span class="stat-value">{{ stats.totalProdutos }}</span>
+      <span class="stat-badge stat-badge-warning" *ngIf="stats.produtosComSaldoBaixo > 0">
+        <mat-icon>warning</mat-icon>
+        {{ stats.produtosComSaldoBaixo }} com saldo baixo
+      </span>
+    </mat-card>
+  </a>
+
+  <a routerLink="/notas-fiscais" class="stat-tile-link">
+    <mat-card class="stat-tile">
+      <mat-icon class="stat-icon">receipt_long</mat-icon>
+      <span class="stat-label">Notas fiscais</span>
+      <span class="stat-value">{{ stats.totalNotas }}</span>
+      <span class="stat-secondary">{{ stats.notasAbertas }} abertas · {{ stats.notasFechadas }} fechadas</span>
+    </mat-card>
+  </a>
+</div>

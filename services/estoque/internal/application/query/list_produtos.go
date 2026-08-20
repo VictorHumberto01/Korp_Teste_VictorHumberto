@@ -32,13 +32,9 @@ func (h *ListProdutosHandler) Handle(ctx context.Context, page, pageSize int) (*
 		return nil, err
 	}
 
-	var data []dto.ProdutoResponse
-	if produtos != nil {
-		for _, p := range produtos {
-			data = append(data, dto.FromEntity(p))
-		}
-	} else {
-		data = []dto.ProdutoResponse{}
+	data := make([]dto.ProdutoResponse, 0, len(produtos))
+	for _, p := range produtos {
+		data = append(data, dto.FromEntity(p))
 	}
 
 	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))

@@ -33,7 +33,6 @@ func NewRouter(h *handler.UsuarioHandler, db *gorm.DB) *gin.Engine {
 			usuarios.GET("", h.List)
 			usuarios.GET("/:id", h.GetByID)
 			usuarios.DELETE("/:id", h.Delete)
-			usuarios.POST("/suggest-bio", h.SuggestBio)
 
 			// Routes with idempotency
 			writeGroup := usuarios.Group("")

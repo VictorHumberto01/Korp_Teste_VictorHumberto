@@ -64,6 +64,24 @@ table {
   }
 }
 
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px;
+  color: #757575;
+  gap: 12px;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #e57373;
+  }
+}
+
 .action-buttons {
   display: flex;
   gap: 4px;

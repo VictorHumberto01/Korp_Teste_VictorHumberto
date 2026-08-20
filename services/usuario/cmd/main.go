@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
 	"context"
 	"fmt"
 	"log"
@@ -12,7 +13,6 @@ import (
 
 	"usuario-service/internal/application/command"
 	"usuario-service/internal/application/query"
-	"usuario-service/internal/infrastructure/ai"
 	"usuario-service/internal/infrastructure/database"
 	httplayer "usuario-service/internal/infrastructure/http"
 	"usuario-service/internal/infrastructure/http/handler"
@@ -27,15 +27,30 @@ func getEnv(key, defaultValue string) string {
 	return defaultValue
 }
 
+// loadEnvFile tenta cada candidato em ordem e carrega o primeiro que existir.
+// godotenv.Load(a, b, c) NÃO faz fallback entre arquivos: ele para no primeiro
+// que falhar ao abrir, então passar vários caminhos de uma vez nunca chegava
+// a tentar o .env da raiz do projeto quando o serviço era iniciado via `cd
+// services/<nome> && go run ./cmd/main.go`.
+func loadEnvFile() {
+	candidates := []string{".env", "../../.env", "../../../.env", "../../../../.env"}
+	for _, path := range candidates {
+		if err := godotenv.Load(path); err == nil {
+			log.Printf("[usuario] variáveis de ambiente carregadas de %s", path)
+			return
+		}
+	}
+	log.Printf("[usuario] nenhum arquivo .env encontrado em %v — usando apenas variáveis de ambiente já exportadas", candidates)
+}
+
 func main() {
+	loadEnvFile()
 	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5432")
 	dbUser := getEnv("DB_USER", "korp")
 	dbPassword := getEnv("DB_PASSWORD", "korp123")
 	dbName := getEnv("DB_NAME", "usuario_db")
-	serverPort := getEnv("SERVER_PORT", "8080")
-	ollamaURL := getEnv("OLLAMA_URL", "http://localhost:11434")
-	ollamaModel := getEnv("OLLAMA_MODEL", "qwen2.5:0.5b")
+	serverPort := getEnv("USUARIO_SERVER_PORT", "8080")
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC",
 		dbHost, dbUser, dbPassword, dbName, dbPort)
@@ -51,7 +66,6 @@ func main() {
 	}
 
 	repo := persistence.NewGormUsuarioRepository(db)
-	ollamaClient := ai.NewOllamaClient(ollamaURL, ollamaModel)
 
 	createCmd := command.NewCreateUsuarioHandler(repo)
 	updateCmd := command.NewUpdateUsuarioHandler(repo)
@@ -59,7 +73,6 @@ func main() {
 
 	getQuery := query.NewGetUsuarioHandler(repo)
 	listQuery := query.NewListUsuariosHandler(repo)
-	suggestBioQuery := query.NewSuggestBioHandler(ollamaClient)
 
 	userHandler := handler.NewUsuarioHandler(
 		createCmd,
@@ -67,7 +80,6 @@ func main() {
 		deleteCmd,
 		getQuery,
 		listQuery,
-		suggestBioQuery,
 	)
 
 	router := httplayer.NewRouter(userHandler, db)

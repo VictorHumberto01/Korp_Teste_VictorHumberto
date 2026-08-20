@@ -33,6 +33,7 @@ func NewRouter(h *handler.ProdutoHandler, db *gorm.DB) *gin.Engine {
 			produtos.GET("", h.List)
 			produtos.GET("/:id", h.GetByID)
 			produtos.DELETE("/:id", h.Delete)
+			produtos.POST("/suggest-description", h.SuggestDescription)
 
 			// Rotas com idempotência (escrita)
 			writeGroup := produtos.Group("")
