@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 import { environment } from '../../../../environments/environment';
 import { Produto, ProdutoPage } from '../models/produto.model';
 
@@ -14,13 +15,6 @@ export class ProdutoService {
 
   private produtosSubject = new BehaviorSubject<Produto[]>([]);
   public produtos$ = this.produtosSubject.asObservable();
-
-  private generateUUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
 
   private handleError(error: any) {
     let errorMessage: string;
@@ -67,14 +61,14 @@ export class ProdutoService {
   }
 
   create(data: { codigo: string; descricao: string; saldo: number }): Observable<Produto> {
-    const headers = new HttpHeaders({ 'Idempotency-Key': this.generateUUID() });
+    const headers = new HttpHeaders({ 'Idempotency-Key': uuidv4() });
     return this.http.post<Produto>(this.apiUrl, data, { headers }).pipe(
       catchError(this.handleError)
     );
   }
 
   update(id: string, data: { descricao?: string; version: number }): Observable<Produto> {
-    const headers = new HttpHeaders({ 'Idempotency-Key': this.generateUUID() });
+    const headers = new HttpHeaders({ 'Idempotency-Key': uuidv4() });
     return this.http.put<Produto>(`${this.apiUrl}/${id}`, data, { headers }).pipe(
       catchError(this.handleError)
     );

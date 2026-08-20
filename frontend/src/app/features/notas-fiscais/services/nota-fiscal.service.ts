@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 import { environment } from '../../../../environments/environment';
 import { NotaFiscal, NotaFiscalPage, ItemNota } from '../models/nota-fiscal.model';
 
@@ -11,13 +12,6 @@ import { NotaFiscal, NotaFiscalPage, ItemNota } from '../models/nota-fiscal.mode
 export class NotaFiscalService {
   private http = inject(HttpClient);
   private apiUrl = environment.faturamentoApiUrl + '/notas-fiscais';
-
-  private generateUUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
 
   private handleError(error: any) {
     let errorMessage: string;
@@ -63,14 +57,14 @@ export class NotaFiscalService {
   }
 
   create(itens: ItemNota[]): Observable<NotaFiscal> {
-    const headers = new HttpHeaders({ 'Idempotency-Key': this.generateUUID() });
+    const headers = new HttpHeaders({ 'Idempotency-Key': uuidv4() });
     return this.http.post<NotaFiscal>(this.apiUrl, { itens }, { headers }).pipe(
       catchError(this.handleError)
     );
   }
 
   imprimir(id: string): Observable<NotaFiscal> {
-    const headers = new HttpHeaders({ 'Idempotency-Key': this.generateUUID() });
+    const headers = new HttpHeaders({ 'Idempotency-Key': uuidv4() });
     return this.http.post<NotaFiscal>(`${this.apiUrl}/${id}/imprimir`, {}, { headers }).pipe(
       catchError(this.handleError)
     );
